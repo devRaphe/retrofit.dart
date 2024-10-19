@@ -2272,21 +2272,20 @@ ${bodyName.displayName} == null
   }
 
   Object? _getFieldValue(ConstantReader? value) {
-    if (value == null) return null;
-    if (value.isBool) return value.boolValue;
-    if (value.isDouble) return value.doubleValue;
-    if (value.isInt) return value.intValue;
-    if (value.isString) return value.stringValue;
-    if (value.objectValue.isEnum) {
-      return value.objectValue.variable?.displayName;
+    if (value?.isBool ?? false) return value?.boolValue;
+    if (value?.isDouble ?? false) return value?.doubleValue;
+    if (value?.isInt ?? false) return value?.intValue;
+    if (value?.isString ?? false) return value?.stringValue;
+    if (value?.objectValue.isEnum ?? false) {
+      return value?.objectValue.variable?.displayName;
     }
-    if (value.isList) {
-      return value.listValue
+    if (value?.isList ?? false) {
+      return value?.listValue
           .map((item) => _getFieldValue(ConstantReader(item)))
           .toList();
     }
-    if (value.isMap) {
-      final mapValue = value.mapValue.map((key, val) {
+    if (value?.isMap ?? false) {
+      final mapValue = value?.mapValue.map((key, val) {
         return MapEntry(
           _getFieldValue(ConstantReader(key)),
           _getFieldValue(ConstantReader(val)),
@@ -2294,17 +2293,12 @@ ${bodyName.displayName} == null
       });
       return mapValue;
     }
-    if (value.isSet) {
-      return value.setValue.map((item) {
+    if (value?.isSet ?? false) {
+      return value?.setValue.map((item) {
         return _getFieldValue(ConstantReader(item));
       }).toSet();
     }
-
-    try {
-      return value.literalValue;
-    } on FormatException catch (_) {
-      return null;
-    }
+    return null;
   }
 
   Map<String, Object> _getMapFromTypedExtras(MethodElement m) {
